@@ -1,17 +1,23 @@
-import { PerformsTasks, Task } from 'serenity-js/protractor';
+import { PerformsTasks, Task, Open } from 'serenity-js/protractor';
+import { AddATodoItem } from './add_a_todo_item';
 
 export class Start implements Task {
 
-    static withATodoListContaining(items: string[]) {       // static method to improve the readability
+    static withATodoListContaining(items: string[]) {
         return new Start(items);
     }
 
-    performAs(actor: PerformsTasks): PromiseLike<void> {    // required by the Task interface
-        return actor.attemptsTo(                            // delegates the work to lower-level tasks
-            // todo: add each item to the Todo List
-        );
+    performAs(actor: PerformsTasks): PromiseLike<void> {
+        return actor.attemptsTo(
+            Open.browserOn('/examples/angularjs/'),
+            ...this.addAll(this.items)                          // ``...` is a spread operator,
+        );                                                      // which converts a list to vararg
     }
 
-    constructor(private items: string[]) {                  // constructor assigning the list of items
-    }                                                       // to a private field
+    constructor(private items: string[]) {
+    }
+
+    private addAll(items: string[]): Task[] {                   // transforms a list of item names
+        return items.map(item => AddATodoItem.called(item));    // into a list of Tasks
+    }
 }

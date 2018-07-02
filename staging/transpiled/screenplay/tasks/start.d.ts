@@ -4,4 +4,5 @@ export declare class Start implements Task {
     static withATodoListContaining(items: string[]): Start;
     performAs(actor: PerformsTasks): PromiseLike<void>;
     constructor(items: string[]);
+    private addAll(items);
 }

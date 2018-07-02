@@ -1,7 +1,8 @@
-import { Actor } from 'serenity-js/protractor';
+import { Actor, BrowseTheWeb } from 'serenity-js/protractor';
 import { AddATodoItem } from '../../spec/screenplay/tasks/add_a_todo_item';
 import { Start } from '../../spec/screenplay/tasks/start';
 import { listOf } from '../../spec/text';
+import { protractor } from 'protractor';
 
 export = function todoUserSteps() {
 
@@ -11,7 +12,7 @@ export = function todoUserSteps() {
                                         // Cucumber to give it up to 30 seconds to get ready.
 
     this.Given(/^.*that (.*) has a todo list containing (.*)$/, function(actorName: string, items: string, callback) {
-        actor = Actor.named(actorName);
+        actor = Actor.named(actorName).whoCan(BrowseTheWeb.using(protractor.browser));
 
         actor.attemptsTo(
             Start.withATodoListContaining(listOf(items)),
@@ -29,6 +30,7 @@ export = function todoUserSteps() {
 
     this.When(/^he adds (.*?) to his list$/, (itemName: string) => {
         return actor.attemptsTo(
-            AddATodoItem.called(itemName),
+            AddATodoItem.called(itemName)
         );
+    });
 };
