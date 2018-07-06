@@ -9,7 +9,7 @@ export class Start implements Task {
 
     performAs(actor: PerformsTasks): PromiseLike<void> {
         return actor.attemptsTo(
-            Open.browserOn('/examples/angularjs/'),
+            Open.browserOn('http://todomvc.com/examples/angularjs/#/'),
             ...this.addAll(this.items)                          // ``...` is a spread operator,
         );                                                      // which converts a list to vararg
     }

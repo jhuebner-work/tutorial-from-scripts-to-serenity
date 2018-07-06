@@ -10,7 +10,7 @@ var Start = (function () {
         return new Start(items);
     };
     Start.prototype.performAs = function (actor) {
-        return actor.attemptsTo.apply(actor, [protractor_1.Open.browserOn('/examples/angularjs/')].concat(this.addAll(this.items) // ``...` is a spread operator,
+        return actor.attemptsTo.apply(actor, [protractor_1.Open.browserOn('http://todomvc.com/examples/angularjs/#/')].concat(this.addAll(this.items) // ``...` is a spread operator,
         )); // which converts a list to vararg
     };
     Start.prototype.addAll = function (items) {

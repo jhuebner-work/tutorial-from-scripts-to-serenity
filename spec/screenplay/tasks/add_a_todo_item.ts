@@ -1,5 +1,7 @@
 
-import { PerformsTasks, Task } from 'serenity-js/protractor';
+import {  Enter, PerformsTasks, Task } from 'serenity-js/protractor';
+import { protractor } from 'protractor';
+import { TodoList } from '../components/todo_list';
 
 export class AddATodoItem implements Task {
 
@@ -8,8 +10,10 @@ export class AddATodoItem implements Task {
     }
 
     performAs(actor: PerformsTasks): PromiseLike<void> {    // required by the Task interface
-        return actor.attemptsTo(                            // delegates the work to lower-level tasks
-            // todo: interact with the UI
+        return actor.attemptsTo(
+            Enter.theValue(this.itemName)                   // enter the value of the item name
+                .into(TodoList.What_Needs_To_Be_Done)       // into a "What needs to be done" field
+                .thenHit(protractor.Key.ENTER)              // then hit enter...
         );
     }
 
