@@ -9,6 +9,7 @@
  * await
  *
  */
+var startTime;
 
 var resolveAfter2Seconds = function() {
     console.log("starting slow promise");
@@ -31,57 +32,53 @@ var resolveAfter1Second = function() {
 };
 
 var sequentialStart = async function() {
-    logTimestamp('==SEQUENTIAL START==');
+    logStart('==SEQUENTIAL ==');
     const startDate = new Date();
     const slow = await resolveAfter2Seconds(); // If the value of the expression following the await operator is not a Promise, it's converted to a resolved Promise.
     const fast = await resolveAfter1Second();
     console.log(slow);
     console.log(fast);
-    logSecondsElapsed(startDate);
-    logTimestamp('==SEQUENTIAL END');
+    logEnd('==SEQUENTIAL ==');
 
 };
 
 var concurrentStart = async function() {
     const startDate = new Date();
 
-    logTimestamp('==CONCURRENT  with await==START');
+    logStart('==CONCURRENT with await=');
     const slow = resolveAfter2Seconds(); // starts timer immediately
     const fast = resolveAfter1Second();
 
     console.log(await slow);
     console.log(await fast); // waits for slow to finish, even though fast is already done!
-    logSecondsElapsed(startDate);
 
-    logTimestamp("CONCURRENT with await ==END")
+    logEnd("CONCURRENT with await")
 }
 
 var stillSerial = function() {
-    logTimestamp('==CONCURRENT START with Promise.all==');
+    logStart('==CONCURRENT with Promise.all==');
     const startDate = new Date();
 
     Promise.all([resolveAfter2Seconds(), resolveAfter1Second()]).then(([slow, fast]) => {
         console.log(slow);
         console.log(fast);
     });
-    logSecondsElapsed(startDate);
 
-    logTimestamp('==CONCURRENT END with Promise.all==');
+    logEnd('==CONCURRENT with Promise.all==');
 
 }
 
 var parallel = function() {
-    logTimestamp('==PARALLEL with Promise.then==');
+    logStart('==PARALLEL with Promise.then==');
     const startDate = new Date();
 
     resolveAfter2Seconds().then((message)=>console.log(message)); // in this case could be simply written as console.log(resolveAfter2Seconds());
     resolveAfter1Second().then((message)=>console.log(message));
-    logSecondsElapsed(startDate);
 
-    logTimestamp("==PARALLEL with Promise.then==END")
+    logEnd("==PARALLEL with Promise.then==")
 }
 
-var logSecondsElapsed = function(startTime) {
+var logEnd = function(message) {
     const endTime = new Date();
 
     var timeDiff = endTime - startTime; //in ms
@@ -90,26 +87,35 @@ var logSecondsElapsed = function(startTime) {
 
     // get seconds
     var seconds = Math.round(timeDiff);
-    console.log("\n Seconds elapsed: " + timeDiff +"\n======================================\n\n");
+    console.log("\nEND "+message+"\n Seconds elapsed: " + timeDiff +"\n======================================\n\n");
 }
 
-var logTimestamp = function(message) {
-    const currentdate = new Date();
+var logStart = function(message) {
+    startTime = new Date();
 
 
-    console.log(currentdate+":\t"+message);
+    console.log("\n======================================\nSTART "+ message +"\n"+ startTime);
 }
 
-logTimestamp('before sequentialStart');
+
+
+
+var logTime = function(message) {
+    time = new Date();
+
+
+    console.log("\n======================================\nTime: "+ message +"\n"+ time);
+}
+logTime('before sequentialStart');
 sequentialStart(); // takes 2+1 seconds in total
 // wait above to finish
-logTimestamp('before concurrentStart');
+logTime('before concurrentStart');
 setTimeout(concurrentStart, 4000); // takes 2 seconds in total
 // wait again
-logTimestamp('before stillSerial');
+logTime('before stillSerial');
 setTimeout(stillSerial, 7000); // same as before
 // wait again
-logTimestamp('before parallel');
+logTime('before parallel');
 setTimeout(parallel, 10000); // trully parallel
 
-logTimestamp('end');
+logTime('end');
