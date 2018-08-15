@@ -4,6 +4,8 @@
 
 # Serenity/JS output
 target
+staging
+_site
 
 # Node
 node_modules
