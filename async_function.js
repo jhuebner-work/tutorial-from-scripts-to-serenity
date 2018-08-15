@@ -31,7 +31,18 @@ var resolveAfter1Second = function() {
     });
 };
 
-var sequentialStart = async function() {
+var sequentialStart =  function() {
+    logStart('==SEQUENTIAL ==');
+    const startDate = new Date();
+    const slow = await resolveAfter2Seconds(); // If the value of the expression following the await operator is not a Promise, it's converted to a resolved Promise.
+    const fast = await resolveAfter1Second();
+    console.log(slow);
+    console.log(fast);
+    logEnd('==SEQUENTIAL ==');
+
+};
+
+var sequentialAsyncStart = async function() {
     logStart('==SEQUENTIAL ==');
     const startDate = new Date();
     const slow = await resolveAfter2Seconds(); // If the value of the expression following the await operator is not a Promise, it's converted to a resolved Promise.
@@ -76,6 +87,16 @@ var parallel = function() {
     resolveAfter1Second().then((message)=>console.log(message));
 
     logEnd("==PARALLEL with Promise.then==")
+}
+
+var map_reduce = function() {
+    var activities = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        activities[_i] = arguments[_i];
+    }
+    return activities.map(this.tracker.track).reduce(function (previous, current) {
+        return previous.then(function () { return current.performAs(_this); });
+    }, Promise.resolve(null));
 }
 
 var logEnd = function(message) {
